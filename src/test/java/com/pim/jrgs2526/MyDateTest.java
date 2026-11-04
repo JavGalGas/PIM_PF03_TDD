@@ -1,6 +1,5 @@
 package com.pim.jrgs2526;
 
-import com.pim.jrgs2526.MyDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,7 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class MyDateTest {
     @ParameterizedTest
-    @CsvSource({"32, FEBRUARY, 2000", "-1, JANUARY, 1999", "0, DECEMBER, 2001", "2, -1, -3"})
+    @CsvSource({"32, FEBRUARY, 2000", "-1, JANUARY, 1999", "0, DECEMBER, 2001", "2, , -3"})
     public void myDateInvalidDateTest(int day, MyDate.Months month, int year) {
         try {
             MyDate date = new MyDate(day, month, year);
