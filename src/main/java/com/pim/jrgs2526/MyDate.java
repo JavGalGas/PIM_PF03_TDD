@@ -46,11 +46,11 @@ public class MyDate {
     private int year = 2000;
 
     public MyDate(int day, Months month,  int year) {
-        try {
-            setYear(year);
-            setMonth(month);
-            setDay(day);
-        } catch (IllegalArgumentException ex) {
+        if (validateDate(day, month, year)) {
+            this.day = day;
+            this.month = month;
+            this.year = year;
+        } else {
             throw new IllegalArgumentException(ERR_INVALID_DATE);
         }
     }
@@ -66,17 +66,10 @@ public class MyDate {
     }
 
     public void setDay(int day) {
-        if (day < 1 || day > 31)
+        if (validateDate(day, this.getMonth(), this.getYear()))
+            this.day = day;
+        else
             throw new IllegalArgumentException(ERR_INVALID_DAY);
-        if (month == Months.FEBRUARY) {
-            if (day > 29 ||(day == 29 && isNotLeapYear(year))) {
-                throw new IllegalArgumentException(ERR_INVALID_DAY);
-            }
-        }
-        else if (day > maxNumberOfDays(month.monthNumber)) {
-            throw new IllegalArgumentException(ERR_INVALID_DAY);
-        }
-        this.day = day;
     }
 
     public Months getMonth() {
@@ -84,22 +77,10 @@ public class MyDate {
     }
 
     public void setMonth(Months month) {
-        if (month == null)
+        if (validateDate(this.day, month, this.getYear()))
+            this.month = month;
+        else
             throw new IllegalArgumentException(ERR_INVALID_MONTH);
-        if (day > maxNumberOfDays(month.monthNumber)) {
-            if (month != Months.FEBRUARY || day != 29 || isNotLeapYear(year))
-                throw new IllegalArgumentException(ERR_INVALID_MONTH);
-        }
-        this.month = month;
-    }
-
-    public boolean validateMonth(Months month) {
-        if (month == null)
-            return false;
-        if (day > maxNumberOfDays(month.monthNumber)) {
-            return month == Months.FEBRUARY && day == 29 && !isNotLeapYear(year);
-        }
-        return true;
     }
 
     public int getYear() {
@@ -107,44 +88,35 @@ public class MyDate {
     }
 
     public void setYear(int year) {
-        if (month == Months.FEBRUARY && day == 29 && isNotLeapYear(year))
+        if (validateDate(this.getDay(), this.getMonth(), year))
+            this.year = year;
+        else
             throw new IllegalArgumentException(ERR_INVALID_YEAR);
-        this.year = year;
     }
 
-    private boolean isNotLeapYear(int year) {
-        return (year % 4 != 0 || year % 100 == 0) && (year % 400 != 0);
+    private boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
-    private int maxNumberOfDays(int month) {
+    private int maxNumberOfDays(Months month, int year) {
         switch (month) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
-            case 12:
+            case JANUARY:
+            case MARCH:
+            case MAY:
+            case JULY:
+            case AUGUST:
+            case OCTOBER:
+            case DECEMBER:
                 return 31;
-            case 2:
-                return 28;
+            case FEBRUARY:
+                return isLeapYear(year) ? 29 : 28;
             default: return 30;
         }
     }
 
     private boolean validateDate(int day, Months month, int year) {
-        if (month == null)
-            throw new IllegalArgumentException(ERR_INVALID_MONTH);
-        if (day < 1 || day > 31)
-            throw new IllegalArgumentException(ERR_INVALID_DAY);
-        if (month == Months.FEBRUARY) {
-            if (day > 29 ||(day == 29 && isNotLeapYear(year))) {
-                throw new IllegalArgumentException(ERR_INVALID_DAY);
-            }
-        }
-        else if (day > maxNumberOfDays(month.monthNumber)) {
-            throw new IllegalArgumentException(ERR_INVALID_DAY);
-        }
-        return true;
+        return month != null
+                && day >= 1
+                && day <= maxNumberOfDays(month, year);
     }
 }
