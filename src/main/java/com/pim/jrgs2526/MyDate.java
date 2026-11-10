@@ -40,25 +40,24 @@ public class MyDate {
         }
     }
 
-    //
-    private int day = 1;
-    private Months month = Months.JANUARY;
-    private int year = 2000;
+    private int day;
+    private Months month;
+    private int year;
 
     public MyDate(int day, Months month,  int year) {
         if (validateDate(day, month, year)) {
-            this.day = day;
-            this.month = month;
             this.year = year;
+            this.month = month;
+            this.day = day;
         } else {
             throw new IllegalArgumentException(ERR_INVALID_DATE);
         }
     }
 
     public MyDate(){
-        setYear(2000);
-        setMonth(Months.JANUARY);
-        setDay(1);
+        this.year = 2000;
+        this.month = Months.JANUARY;
+        this.day = 1;
     }
 
     public int getDay() {
