@@ -45,13 +45,12 @@ public class MyDate {
     private int year;
 
     public MyDate(int day, Months month,  int year) {
-        if (validateDate(day, month, year)) {
-            this.year = year;
-            this.month = month;
-            this.day = day;
-        } else {
+        if (isDateInvalid(day, month, year))
             throw new IllegalArgumentException(ERR_INVALID_DATE);
-        }
+
+        this.year = year;
+        this.month = month;
+        this.day = day;
     }
 
     public MyDate(){
@@ -65,10 +64,9 @@ public class MyDate {
     }
 
     public void setDay(int day) {
-        if (validateDate(day, this.getMonth(), this.getYear()))
-            this.day = day;
-        else
+        if (isDateInvalid(day, this.getMonth(), this.getYear()))
             throw new IllegalArgumentException(ERR_INVALID_DAY);
+        this.day = day;
     }
 
     public Months getMonth() {
@@ -76,10 +74,9 @@ public class MyDate {
     }
 
     public void setMonth(Months month) {
-        if (validateDate(this.day, month, this.getYear()))
-            this.month = month;
-        else
+        if (isDateInvalid(this.day, month, this.getYear()))
             throw new IllegalArgumentException(ERR_INVALID_MONTH);
+        this.month = month;
     }
 
     public int getYear() {
@@ -87,10 +84,9 @@ public class MyDate {
     }
 
     public void setYear(int year) {
-        if (validateDate(this.getDay(), this.getMonth(), year))
-            this.year = year;
-        else
+        if (isDateInvalid(this.getDay(), this.getMonth(), year))
             throw new IllegalArgumentException(ERR_INVALID_YEAR);
+        this.year = year;
     }
 
     private boolean isLeapYear(int year) {
@@ -99,23 +95,21 @@ public class MyDate {
 
     private int maxNumberOfDays(Months month, int year) {
         switch (month) {
-            case JANUARY:
-            case MARCH:
-            case MAY:
-            case JULY:
-            case AUGUST:
-            case OCTOBER:
-            case DECEMBER:
-                return 31;
             case FEBRUARY:
                 return isLeapYear(year) ? 29 : 28;
-            default: return 30;
+            case APRIL:
+            case JUNE:
+            case SEPTEMBER:
+            case NOVEMBER:
+                return 30;
+
+            default: return 31;
         }
     }
 
-    private boolean validateDate(int day, Months month, int year) {
-        return month != null
-                && day >= 1
-                && day <= maxNumberOfDays(month, year);
+    private boolean isDateInvalid(int day, Months month, int year) {
+        return month == null
+                || day < 1
+                || day > maxNumberOfDays(month, year);
     }
 }
